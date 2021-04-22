@@ -1,0 +1,12 @@
+[Unit]
+Description=Gunicorn instance to serve flask app
+After=network.target
+
+[Service]
+User=pi
+Group=www-data
+WorkingDirectory=/home/pi/oled-display/scripts
+ExecStart=python3 main.py
+[Install]
+WantedBy=multi-user.target
+

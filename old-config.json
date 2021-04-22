@@ -1,0 +1,6 @@
+{
+	"scenes": [
+		"clock.execute",
+		"analog.execute"
+	]
+}
