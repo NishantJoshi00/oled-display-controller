@@ -9,7 +9,6 @@ import time
 import math
 from redis_for_oled import rc
 def execute():
-	global blink
 	try:
 		data = datetime.now().time().isoformat().split(":")[-1]
 		secs = float(data)

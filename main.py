@@ -8,7 +8,7 @@ Config Format
 128 x 15 are yellow pixels
 the other are blue
 """
-
+from importlib import reload
 import time
 import json
 from redis_for_oled import rc
@@ -39,9 +39,11 @@ def load_config(filename):
 	scenes = data['scenes']
 	for i in range(len(scenes)):
 		module, function = scenes[i].split(".")
-		scenes[i] = __import__(module).__getattribute__(function)
+		scenes[i] = reload(__import__(module)).__getattribute__(function)
 	count = 0
 	scene = load_scenes()
+	if scene < 0 or scene >= len(scenes):
+		scene = 0
 	return (count, scene, scenes, delay, wait, frame_rate)
 
 count, scene, scenes, delay, wait, frame_rate = load_config("old-config.json")
@@ -62,7 +64,7 @@ while True:
 			scene += 1
 	elif delay == -1 and int(count) % 10 == 0:
 		count, scene, scenes, delay, wait, frame_rate = load_config("old-config.json")
-		if scene > len(scenes) or scene < 0:
+		if scene >= len(scenes) or scene < 0:
 			scene = 0
 	
 	code = scenes[scene]()

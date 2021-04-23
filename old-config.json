@@ -1,6 +1,7 @@
 {
 	"scenes": [
 		"clock.execute",
-		"analog.execute"
+		"analog.execute",
+		"faces.execute"
 	]
 }

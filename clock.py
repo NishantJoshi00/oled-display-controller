@@ -4,7 +4,7 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from disp_error import error, notify
 from initiate import disp
-font = ImageFont.truetype("Montserrat-Regular.ttf", 50)
+font = ImageFont.truetype("Montserrat-Regular.ttf", 48)
 import time
 from redis_for_oled import rc
 def execute():
@@ -22,8 +22,11 @@ def execute():
 		draw = ImageDraw.Draw(image)
 		size = disp.width - font.getsize(data)[0]
 		size = size // 2
-		
-		notify(disp, draw, rc.get('oled:notification').decode())
+		try:	
+			notify(disp, draw, rc.get('oled:notification').decode())
+		except:
+			notify(disp, draw, "")
+			rc.set('oled:notification', '')
 		padding = (size, 7)
 		draw.text(padding, data, font=font, fill=255)
 		disp.image(image)
