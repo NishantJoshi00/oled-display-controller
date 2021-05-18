@@ -4,9 +4,10 @@ from PIL import ImageDraw
 from PIL import ImageFont
 from disp_error import error, notify
 from initiate import disp
-font = ImageFont.truetype("Montserrat-Regular.ttf", 48)
+font = ImageFont.truetype("Montserrat-Regular.ttf", 45)
 import time
 from redis_for_oled import rc
+from status import status_bar
 def execute():
 	global blink
 	try:
@@ -29,9 +30,10 @@ def execute():
 			rc.set('oled:notification', '')
 		padding = (size, 7)
 		draw.text(padding, data, font=font, fill=255)
+		status_bar(image, draw, disp)
 		disp.image(image)
 		disp.display()
-	except e:
+	except Exception as e:
 		error(disp, "Terminated")
 		print(e)
 		return -1

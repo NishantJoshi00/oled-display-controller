@@ -1,0 +1,1 @@
+ffmpeg -i input.mp4 -vf scale=128:57 -preset slow -crf 18 output.mp4

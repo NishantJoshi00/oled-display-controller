@@ -12,6 +12,7 @@ from importlib import reload
 import time
 import json
 from redis_for_oled import rc
+from boot import bootimage
 def load_scenes():
 	state = rc.get('oled:scene')
 	if state == None:
@@ -44,30 +45,34 @@ def load_config(filename):
 	scene = load_scenes()
 	if scene < 0 or scene >= len(scenes):
 		scene = 0
+	reload(__import__("status"))
 	return (count, scene, scenes, delay, wait, frame_rate)
 
-count, scene, scenes, delay, wait, frame_rate = load_config("old-config.json")
-
-cycles = 0
-while True:
-	time.sleep(wait)
-	count += wait
-	if count >= delay and delay != -1:
-		count = 0
-		if scene == len(scenes) - 1:
-			cycles += 1
-			if cycles == 20:
-				cycles = 0
-				count, scene, scenes, delay, wait, frame_rate = load_config("old-config.json")
-			scene = 0
-		else:
-			scene += 1
-	elif delay == -1 and int(count) % 10 == 0:
-		count, scene, scenes, delay, wait, frame_rate = load_config("old-config.json")
-		if scene >= len(scenes) or scene < 0:
-			scene = 0
+if __name__ == "__main__":
+	bootimage(2)
 	
-	code = scenes[scene]()
-	print(code)
-	if code != 0:
-		break
+	count, scene, scenes, delay, wait, frame_rate = load_config("old-config.json")
+
+	cycles = 0
+	while True:
+		time.sleep(wait)
+		count += wait
+		if count >= delay and delay != -1:
+			count = 0
+			if scene == len(scenes) - 1:
+				cycles += 1
+				if cycles == 20:
+					cycles = 0
+					count, scene, scenes, delay, wait, frame_rate = load_config("old-config.json")
+				scene = 0
+			else:
+				scene += 1
+		elif delay == -1 and int(count) % 10 == 0:
+			count, scene, scenes, delay, wait, frame_rate = load_config("old-config.json")
+			if scene >= len(scenes) or scene < 0:
+				scene = 0
+		
+		code = scenes[scene]()
+		print(code)
+		if code != 0:
+			break
